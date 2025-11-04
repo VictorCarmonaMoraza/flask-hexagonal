@@ -1,25 +1,30 @@
-from flask import Flask
-from flask_restx import Api, Resource
+from flask import Flask, redirect
+from flask_restx import Api
+from shared.infraestructure.api import health_ns
 
-# Crear la app Flask
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
 
-# Inicializar Flask-RESTX (Swagger incluido)
-api = Api(
-    app,
-    version="1.0",
-    title="My Flask RESTX API",
-    description="Ejemplo básico con Swagger UI",
-)
+    # Creamos el Api primero
+    api = Api(
+        app,
+        version="1.0",
+        title="My Flask RESTX API",
+        description="Ejemplo básico con Swagger UI",
+        doc="/swagger"  # Swagger UI estará en /swagger
+    )
 
-# Crear un namespace (grupo de rutas)
-ns = api.namespace("home", description="Endpoints de ejemplo")
+    # Registramos el namespace importado
+    api.add_namespace(health_ns, path="/health")  # 🔹 path explícito
 
-@api.route("/health")
-class HomeResource(Resource):
-    def get(self):
-        """Endpoint de bienvenida"""
-        return {"detail": "ok"},200
+    # Redirigir raíz "/" directamente a Swagger
+    @app.route("/")
+    def root_redirect():
+        return redirect("/swagger")  # 🔹 Sin la barra final también funciona
+
+    return app
+
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
