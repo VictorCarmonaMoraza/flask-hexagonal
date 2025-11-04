@@ -15,11 +15,11 @@ api = Api(
 # Crear un namespace (grupo de rutas)
 ns = api.namespace("home", description="Endpoints de ejemplo")
 
-@ns.route("/")
+@api.route("/health")
 class HomeResource(Resource):
     def get(self):
         """Endpoint de bienvenida"""
-        return {"message": "Welcome to the Home Page!"}
+        return {"detail": "ok"},200
 
 if __name__ == "__main__":
     app.run(debug=True)
