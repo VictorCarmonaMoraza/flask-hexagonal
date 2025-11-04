@@ -1,6 +1,7 @@
 from flask import Flask, redirect
 from flask_restx import Api
-from shared.infraestructure.api import health_ns
+from shared.infraestructure.api import health_ns, user_ns
+
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +17,7 @@ def create_app():
 
     # Registramos el namespace importado
     api.add_namespace(health_ns, path="/health")  # 🔹 path explícito
+    api.add_namespace(user_ns, path="/users")  # 🔹 path explícito
 
     # Redirigir raíz "/" directamente a Swagger
     @app.route("/")
