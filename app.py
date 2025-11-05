@@ -1,6 +1,7 @@
 from flask import Flask, redirect
 from flask_restx import Api
-from shared.infraestructure.api import health_ns, user_ns
+
+from shared.infraestructure.api.api import health_ns, user_ns
 
 
 def create_app():
