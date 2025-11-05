@@ -1,6 +1,10 @@
+from flask import jsonify
 from flask_restx import Namespace, Resource
 
+from shared.application.services.user_bd_service import UserBDService
 from shared.application.services.user_service import UserService
+from shared.infraestructure.repositories.user_bd_repository import User_BD_Repository
+
 from shared.infraestructure.repositories.user_repository import UserRepository
 
 health_ns = Namespace("health", description="Health check endpoint")
@@ -31,3 +35,20 @@ class UserResource(Resource):
             "name": user.username,
             "email": user.email
         }, 200
+
+# Instanciamos repositorio y servicio
+user_bd_repository = User_BD_Repository()
+user_bd_service = UserBDService(user_bd_repository)
+
+# Namespace de usuarios
+user_bd_ns = Namespace("login", description="Operaciones de Login")
+
+@user_bd_ns.route("/")
+class UserResource(Resource):
+    def get(self):
+        try:
+            usuarios = user_bd_service.listar_usuarios()
+            return jsonify(usuarios)
+        except Exception as e:
+            print("❌ ERROR:", e)
+            return jsonify({"error": str(e)}), 500
